@@ -1,0 +1,30 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "run dev",
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/babel-node",
+      "program": "${file}",
+      "sourceMaps": true,
+      "env": {
+        "DEBUG": "test:*,app:*"
+      },
+      "console": "integratedTerminal",
+      "runtimeArgs": ["--nolazy"],
+      "stopOnEntry": false
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "run ava test",
+      "program": "${workspaceRoot}/node_modules/ava/profile.js",
+      "args": ["${file}"],
+      "env": {
+        "DEBUG": "test:*,app:*"
+      },
+      "console": "integratedTerminal"
+    }
+  ]
+}

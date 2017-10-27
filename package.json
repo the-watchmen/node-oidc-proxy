@@ -1,0 +1,73 @@
+{
+  "name": "node-oidc-proxy",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "author": "tk",
+  "license": "MIT",
+  "scripts": {
+    "start": "cross-env DEBUG=app:* babel-watch src",
+    "start-test": "cross-env NODE_ENV=auto DEBUG=app:* babel-watch src/api",
+    "ava": "cross-env DEBUG=test:*,app:* NODE_ENV=auto ava -s test/ava",
+    "ava-debug": "cross-env DEBUG=test:*,app:* NODE_ENV=auto ava -s",
+    "pretest": "xo",
+    "test": "npm run ava",
+    "prebuild-": "npm run test",
+    "initialize": "cross-env DEBUG=app:* babel-node src/initialize.js",
+    "fix": "xo --fix",
+    "proxy-dev": "cross-env DEBUG=app:*,lib:* babel-watch src & cross-env DEBUG=app:*,lib:* babel-node mock-server"
+  },
+  "dependencies": {
+    "axios": "^0.16.2",
+    "babel-polyfill": "^6.26.0",
+    "body-parser": "^1.18.2",
+    "config": "^1.26.2",
+    "cors": "^2.8.4",
+    "debug": "^3.1.0",
+    "express": "^4.16.2",
+    "express-http-proxy": "^1.0.7",
+    "express-jwt": "^5.3.0",
+    "express-session": "^1.15.6",
+    "fs-extra": "^4.0.1",
+    "lodash": "^4.17.4",
+    "openid-client": "^1.16.0",
+    "passport": "^0.4.0"
+  },
+  "devDependencies": {
+    "@watchmen/helpr": "^1.0.3",
+    "@watchmen/json-server-helpr": "^1.0.6",
+    "@watchmen/web-helpr": "^2.0.0",
+    "ava": "^0.22.0",
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.0.1",
+    "babel-plugin-import": "^1.6.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-watch": "^2.0.7",
+    "child-process-promise": "^2.2.1",
+    "cross-env": "^5.0.5",
+    "cucumber": "^3.0.4",
+    "cuke-helpr": "^3.1.0",
+    "eslint-config-prettier": "^2.6.0",
+    "eslint-plugin-prettier": "^2.2.0",
+    "faker": "^4.1.0",
+    "json-server": "^0.12.0",
+    "jsondiffpatch": "^0.2.4",
+    "jsonwebtoken": "^8.1.0",
+    "prettier": "^1.7.4",
+    "randexp": "^0.4.6",
+    "test-helpr": "^0.3.2",
+    "xo": "^0.18.2",
+    "xo-loader": "^0.8.0"
+  },
+  "ava": {
+    "require": [
+      "babel-register",
+      "babel-polyfill"
+    ]
+  },
+  "xo": {
+    "useEslintrc": true
+  }
+}

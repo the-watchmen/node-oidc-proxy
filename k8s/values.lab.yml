@@ -1,0 +1,32 @@
+name: udx-api
+namespace: udx
+replicas: 2
+resources:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi
+service:
+  type: ClusterIP
+  internalPort: 3000
+image:
+  pullPolicy: Always
+  repository: udx-api
+  # tag: dynamically use git sha
+  imagePullSecrets: lab-nexus-registry
+  env:
+    DB_URL: mysql://udx-user:s3cret@pds-lab-mysql.cl7ds70wmwcy.us-east-1.rds.amazonaws.com:3306/udx
+ingress:
+  enabled: true
+  hosts:
+    - udx-api.lab.ds.aetna.com
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
+  tls:
+    # Secrets must be manually created in the namespace.
+    - secretName: udx-api-tls
+      hosts:
+        - udx-api.lab.ds.aetna.com
