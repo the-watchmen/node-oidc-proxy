@@ -15,7 +15,7 @@ const app = jsonServer.create()
 // and use formatPublicKey from 'web-helpr' package...
 //
 const secret = webHelpr.formatPublicKey({
-  key: config.get('listener.secret')
+  key: config.get('mock.secret')
 })
 app.use(jwt({secret, credentialsRequired: false}).unless({path: ['/']}))
 app.use((req, res, next) => {

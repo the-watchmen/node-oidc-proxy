@@ -1,32 +1,25 @@
-// eslint-disable-next-line import/no-unassigned-import
-// import 'babel-polyfill'
-// import assert from 'assert'
+import crypto from 'crypto'
 import _ from 'lodash'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import debug from 'debug'
 import config from 'config'
-// import jwt from 'express-jwt'
-// import {formatPublicKey} from 'web-helpr'
 import express from 'express'
 import session from 'express-session'
-// import connectEnsureLogin from 'connect-ensure-login'
-import passport from 'passport'
 import oidcClient from 'openid-client'
 import proxy from 'express-http-proxy'
 
 const dbg = debug('app:index')
 
-// eslint-disable-next-line no-undef
+const tokenKey = 'session.tokens'
+const ctxKey = 'session.ctx'
+
 process.on('unhandledRejection', err => {
   dbg('unhandled-rejection: %o', err)
-  // eslint-disable-next-line no-undef
   process.exit(1)
 })
 
-const STRATEGY = 'oidc'
-
-export default (async function() {
+export default (async function({store} = {}) {
   const Issuer = oidcClient.Issuer
   const {oauth} = config
 
@@ -40,38 +33,16 @@ export default (async function() {
 
   const client = new issuer.Client({
     client_id: oauth.client.id,
-    client_secret: oauth.client.secret,
-    redirect_uris: [oauth.client.redirectUri]
+    client_secret: oauth.client.secret
   })
 
-  // const params = {
-  //   // ... any authorization request parameters go here
-  //   // client_id defaults to client.client_id
-  //   // redirect_uri defaults to client.redirect_uris[0]
-  //   // response type defaults to client.response_types[0], then 'code'
-  //   // scope defaults to 'openid'
-  //   redirect_uri:
-  // }
-
-  passport.use(
-    STRATEGY,
-    new oidcClient.Strategy(
-      {client, params: {client_id: oauth.client.id}, passReqToCallback: true},
-      (tokenset, userinfo, done) => {
-        dbg('tokenset', tokenset)
-        dbg('access_token', tokenset.access_token)
-        dbg('id_token', tokenset.id_token)
-        dbg('claims', tokenset.claims)
-        dbg('userinfo', userinfo)
-        // do i need to call passport's done() here?
-        // drop tokens in session here?
-        return done(null, {})
-      }
-    )
-  )
+  client.CLOCK_TOLERANCE = config.oauth.clockTolerance
 
   const app = express()
-  app.use(session({secret: 's3cret', resave: false, saveUninitialized: false}))
+
+  app.use(
+    session({store, secret: config.get('session.secret'), resave: false, saveUninitialized: false})
+  )
 
   // calls to /proxy/... will pass thru after appending token obtained from session
   app.use(
@@ -79,13 +50,10 @@ export default (async function() {
     proxy(config.api.url, {
       preserveReqSession: true,
       proxyReqOptDecorator: function(proxyReqOpts, srcReq) {
-        // dbg('prod: headers=%o', srcReq.headers)
-        // dbg('prod: pro=%o, session=%o', proxyReqOpts, srcReq.session)
-        // const {grant} = srcReq.session
-        const token = _.get(srcReq, 'session.grant.response.access_token')
-        if (token) {
-          // const {access_token} = grant.response
-          proxyReqOpts.headers['Authorization'] = `Bearer ${token}`
+        // dbg('proxy: headers=%o', srcReq.headers)
+        const tokens = _.get(srcReq, tokenKey)
+        if (tokens) {
+          proxyReqOpts.headers['Authorization'] = `Bearer ${tokens.access_token}`
         } else {
           dbg('proxy-req-opt-decorator: warning, unable to obtain token from session, YMMV...')
         }
@@ -98,28 +66,40 @@ export default (async function() {
   app.use(bodyParser.urlencoded({extended: true}))
   app.use(cors())
   app.use((req, res, next) => {
+    // checkmarx complaint?
     res.setHeader('Content-Security-Policy', 'default-src "none"; connect-src "self" https:;')
     next()
   })
 
   app.get('/', function(req, res) {
-    res.send(`proxy: session active=${req.session.grant !== undefined}`)
+    res.send(`proxy: session active=${_.get(req, tokenKey) !== undefined}`)
   })
 
-  app.get('/auth', passport.authenticate(STRATEGY))
+  app.get('/login', (req, res) => {
+    const ctx = {
+      state: getRandom(),
+      nonce: getRandom()
+    }
+    _.set(req, ctxKey, ctx)
 
-  app.get('/auth/cb', function(req) {
-    dbg('/auth/cb: session=%o', req.session)
-    // const {raw} = req.query
-    //const {grant} = req.session
-    // dbg('callback: req.query.raw=%o', raw)
-    //dbg('callback: req.session.grant=%o', grant)
-    // res.send(JSON.stringify(grant, null, 2))
-    //const idToken = _.get(grant, 'response.raw.id_token')
-    //assert(idToken, 'id_token required')
-    // res.redirect(`http://localhost:8080/#/authenticated/${idToken}`)
-    // res.redirect(`http://localhost:8080/#/authenticated/${1}`)
-    passport.authenticate(STRATEGY, {successRedirect: '/', failureRedirect: '/login'})
+    const url = client.authorizationUrl({
+      ...ctx,
+      redirect_uri: oauth.client.redirectUri
+    })
+
+    dbg('/login: url=%o', url)
+    res.redirect(url)
+  })
+
+  app.get('/auth/cb', async (req, res) => {
+    const params = client.callbackParams(req)
+    const ctx = _.get(req, ctxKey)
+    delete req[ctxKey]
+    dbg('/auth/cb: params=%o, ctx=%o', params, ctx)
+    const tokens = await client.authorizationCallback(oauth.client.redirectUri, params, ctx)
+    dbg('/auth/cb: tokens=%o', tokens)
+    _.set(req, tokenKey, tokens)
+    res.redirect(`http://localhost:8080/#/authenticated/${tokens.id_token}`)
   })
 
   // eslint-disable-next-line no-unused-vars
@@ -145,3 +125,7 @@ export default (async function() {
     dbg('listening on port=%o', port)
   })
 })()
+
+function getRandom() {
+  return crypto.randomBytes(16).toString('hex')
+}
