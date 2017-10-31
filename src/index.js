@@ -120,10 +120,14 @@ export default (async function({store} = {}) {
     })
   })
 
-  const port = config.get('listener.port')
-  app.listen(port, () => {
-    dbg('listening on port=%o', port)
-  })
+  if (store) {
+    return app
+  } else {
+    const port = config.get('listener.port')
+    app.listen(port, () => {
+      dbg('listening on port=%o', port)
+    })
+  }
 })()
 
 function getRandom() {
