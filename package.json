@@ -1,5 +1,5 @@
 {
-  "name": "@watchmen/node-oidc-proxy",
+  "name": "@watchmen/oidc-proxy",
   "version": "1.0.4",
   "description": "",
   "main": "dist/index.js",
@@ -17,10 +17,13 @@
     "fix": "xo --fix",
     "test-proxy": "cross-env DEBUG=app:*,lib:*,test:* babel-watch test/shared/test-proxy",
     "mock-api": "cross-env DEBUG=app:*,lib:*,test:* babel-node mock-server",
-    "mock-idp": "cross-env DEBUG=app:*,lib:*,test:*,oidc-provider:* babel-watch test/shared/mock-oidc-provider",
+    "mock-idp":
+      "cross-env DEBUG=app:*,lib:*,test:*,oidc-provider:* babel-watch test/shared/mock-oidc-provider",
     "proxy-all": "yarn run mock-api & yarn run mock-idp & yarn run test-proxy",
-    "cuke": "cross-env DEBUG=test:*,app:*,lib:*,oidc-provider:* NODE_ENV=auto cucumber-js --compiler=js:babel-polyfill --compiler=js:babel-core/register test/cuke",
-    "cuke-feature": "cross-env DEBUG=test:*,app:*,lib:*,oidc-provider:* NODE_ENV=auto cucumber-js --compiler=js:babel-polyfill --compiler=js:babel-core/register"
+    "cuke":
+      "cross-env DEBUG=test:*,app:*,lib:*,oidc-provider:* NODE_ENV=auto cucumber-js --compiler=js:babel-polyfill --compiler=js:babel-core/register test/cuke",
+    "cuke-feature":
+      "cross-env DEBUG=test:*,app:*,lib:*,oidc-provider:* NODE_ENV=auto cucumber-js --compiler=js:babel-polyfill --compiler=js:babel-core/register"
   },
   "dependencies": {
     "body-parser": "^1.18.2",
@@ -71,10 +74,7 @@
     "xo-loader": "^0.8.0"
   },
   "ava": {
-    "require": [
-      "babel-register",
-      "babel-polyfill"
-    ]
+    "require": ["babel-register", "babel-polyfill"]
   },
   "xo": {
     "useEslintrc": true
