@@ -1,6 +1,6 @@
 {
-  "name": "@watchmen/node-oidc-proxy",
-  "version": "1.0.4",
+  "name": "@watchmen/oidc-proxy",
+  "version": "1.0.5",
   "description": "",
   "main": "dist/index.js",
   "author": "tk",
