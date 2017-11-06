@@ -1,6 +1,6 @@
 {
   "name": "node-oidc-proxy",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "",
   "main": "dist/index.js",
   "author": "tk",
@@ -11,8 +11,8 @@
     "ava": "cross-env DEBUG=test:*,app:*,lib:*,oidc-provider:* NODE_ENV=auto ava -s test/ava",
     "ava-debug": "cross-env DEBUG=test:*,app:*,lib:*,oidc-provider:* NODE_ENV=auto ava -s",
     "pretest": "xo",
-    "test": "npm run ava",
-    "prebuild": "npm run test",
+    "test": "yarn run ava && yarn run cuke",
+    "prebuild": "yarn run test",
     "build": "babel ./src -d ./dist",
     "fix": "xo --fix",
     "test-proxy": "cross-env DEBUG=app:*,lib:*,test:* babel-watch test/shared/test-proxy",
