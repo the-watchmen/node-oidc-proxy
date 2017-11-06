@@ -2,11 +2,10 @@ import debug from 'debug'
 import jsonServer from 'json-server'
 import jwt from 'express-jwt'
 import {sleep} from '@watchmen/helpr'
-import {webHelpr} from '@watchmen/web-helpr'
 import config from 'config'
 import resources from './resources'
 
-const dbg = debug('app:srv')
+const dbg = debug('test:mock')
 
 // think: const app = express()
 const app = jsonServer.create()
@@ -14,16 +13,14 @@ const app = jsonServer.create()
 // in case of keycloak see realm-settings-> keys -> rsa -> public-key
 // and use formatPublicKey from 'web-helpr' package...
 //
-const secret = webHelpr.formatPublicKey({
-  key: config.get('mock.secret')
-})
+const secret = config.get('oauth.client.secret')
 app.use(jwt({secret, credentialsRequired: false}).unless({path: ['/']}))
 app.use((req, res, next) => {
   dbg('jwt-check: req.user=%o', req.user)
   next()
 })
 app.use(jsonServer.defaults())
-const router = jsonServer.router('mock-server/db.json')
+const router = jsonServer.router(config.get('mock.db'))
 
 const _sleep = config.mock.sleep
 
@@ -71,7 +68,7 @@ export function getIndex(url) {
   // getIndex('/dogs?food=bacon') -> 'dogs'
   // getIndex('/dogs/:id') -> false
   const toks = url.split('?')[0].split('/')
-  const result = toks.length == 2 && toks[1] != 'db' && toks[1]
-  dbg('get-index: url=%o, result=%o', url, result)
+  const result = toks.length == 2 && !['db', '__rules'].includes(toks[1]) && toks[1]
+  dbg('get-index: toks=%o, url=%o, result=%o', toks, url, result)
   return result
 }

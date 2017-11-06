@@ -22,7 +22,24 @@
       "program": "${workspaceRoot}/node_modules/ava/profile.js",
       "args": ["${file}"],
       "env": {
-        "DEBUG": "test:*,app:*"
+        "DEBUG": "test:*,app:*,lib:*,oidc-provider:*",
+        "NODE_ENV": "auto"
+      },
+      "console": "integratedTerminal"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "run cuke test",
+      "program": "${workspaceRoot}/node_modules/.bin/cucumber-js",
+      "args": [
+        "--compiler=js:babel-polyfill",
+        "--compiler=js:babel-core/register",
+        "test/cuke"
+      ],
+      "env": {
+        "NODE_ENV": "auto",
+        "DEBUG": "test:*,app:*,lib:*,oidc-provider:*"
       },
       "console": "integratedTerminal"
     }

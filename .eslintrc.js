@@ -1,9 +1,9 @@
 module.exports = {
   extends: ['eslint:recommended', 'prettier'],
-  parser: 'babel-eslint',
+  // parser: 'babel-eslint',
   env: {
-    es6: true,
-    browser: true
+    es6: true
+    // browser: true
   },
   ecmaFeatures: {
     modules: true,
