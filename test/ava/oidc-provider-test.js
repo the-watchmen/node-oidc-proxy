@@ -79,4 +79,6 @@ test('discover', async t => {
   dbg('params=%o', params)
   const tokens = await client.authorizationCallback(clientCfg.redirectUri, params, ctx)
   dbg('tokens=%o', tokens)
+
+  // listener.close()
 })
