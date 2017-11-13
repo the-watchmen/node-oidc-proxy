@@ -12,7 +12,8 @@ module.exports = {
     client: {
       id: 'OAUTH_CLIENT_ID',
       secret: 'OAUTH_CLIENT_SECRET',
-      redirectUri: 'OAUTH_REDIRECT_URI'
+      redirectUri: 'OAUTH_REDIRECT_URI',
+      userAgentRedirectUri: 'OAUTH_USER_AGENT_REDIRECT_URI'
     },
     clockTolerance: 'OAUTH_CLOCK_TOLERANCE'
   },

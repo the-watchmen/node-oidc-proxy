@@ -125,7 +125,7 @@ export default async function({sessionStrategy} = {}) {
       const tokens = await client.authorizationCallback(oauthCfg.client.redirectUri, params, ctx)
       dbg('/auth/cb: tokens=%o', tokens)
       _.set(req, tokenKey, tokens)
-      res.redirect(`http://localhost:8080/#/authenticated/${tokens.id_token}`)
+      res.redirect(`${oauthCfg.client.userAgentRedirectUri}/${tokens.id_token}`)
     })
   )
 
