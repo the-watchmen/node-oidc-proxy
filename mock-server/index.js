@@ -20,7 +20,7 @@ app.use((req, res, next) => {
   next()
 })
 app.use(jsonServer.defaults())
-const router = jsonServer.router(config.get('mock.db'))
+const router = jsonServer.router('mock-server/db.json')
 
 const _sleep = config.mock.sleep
 
