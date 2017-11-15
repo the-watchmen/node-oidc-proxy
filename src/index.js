@@ -118,6 +118,8 @@ export default async function({sessionStrategy} = {}) {
   app.get(
     '/auth/cb',
     asyncIt(async (req, res) => {
+      const client = await getClient()
+
       const params = client.callbackParams(req)
       const ctx = _.get(req, ctxKey)
       delete req[ctxKey]
