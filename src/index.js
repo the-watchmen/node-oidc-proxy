@@ -35,9 +35,10 @@ export default async function({sessionStrategy} = {}) {
 
   const Issuer = oidcClient.Issuer
   const {oauth: oauthCfg} = config
-  const {timeout} = oauthCfg.client
+  const {timeout} = oauthCfg.client.timeout
   if (timeout) {
-    Issuer.defaultHttpOptions = {timeout}
+    dbg('timeout=%o', timeout)
+    Issuer.defaultHttpOptions = {timeout: parseInt(timeout)}
   }
   dbg('issuer-http-options=%o', Issuer.defaultHttpOptions)
   let client
