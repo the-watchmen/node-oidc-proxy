@@ -1,9 +1,9 @@
 import test from 'ava'
-import debug from 'debug'
+import debug from '@watchmen/debug'
 import oidcClient from 'openid-client'
 // import _ from 'lodash'
 
-const dbg = debug('test:oidc')
+const dbg = debug(__filename)
 
 test('discover', async t => {
   const Issuer = oidcClient.Issuer

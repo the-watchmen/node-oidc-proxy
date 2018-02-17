@@ -1,14 +1,14 @@
 import qs from 'querystring'
 import {URL} from 'url'
 import test from 'ava'
-import debug from 'debug'
+import debug from '@watchmen/debug'
 import oidcClient from 'openid-client'
 import config from 'config'
 import {getFormAction, getCookieAxios} from '../shared/test-helper'
 import '../shared/mock-oidc-provider'
 import {getRandom} from '../../src'
 
-const dbg = debug('test:oidc-provider')
+const dbg = debug(__filename)
 
 const axios = getCookieAxios()
 

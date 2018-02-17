@@ -1,10 +1,10 @@
-import debug from 'debug'
+import debug from '@watchmen/debug'
 import {defineSupportCode} from 'cucumber'
 import {asTemplate, evalInContext} from '@watchmen/test-helpr'
 import config from 'config'
 import axios from 'axios'
 
-const dbg = debug('test:mock:steps')
+const dbg = debug(__filename)
 
 const url = config.get('mock.url')
 

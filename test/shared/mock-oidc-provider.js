@@ -1,15 +1,16 @@
 import Provider from 'oidc-provider'
-import debug from 'debug'
+import debug from '@watchmen/debug'
 import config from 'config'
 import jwt from 'jsonwebtoken'
 import _ from 'lodash'
 
-const dbg = debug('test:oidc-provider')
+const dbg = debug(__filename)
 const secret = config.get('oauth.client.secret')
 const client = {
   client_id: config.get('oauth.client.id'),
   client_secret: secret,
   redirect_uris: [config.get('oauth.client.redirectUri')],
+  post_logout_redirect_uris: [config.get('oauth.client.userAgentPostLogoutRedirectUri')],
   grant_types: ['authorization_code']
 }
 const oidc = new Provider(config.get('oauth.issuer.url'), config.get('idp'))

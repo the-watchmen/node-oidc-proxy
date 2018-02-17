@@ -18,6 +18,7 @@ module.exports = {
       secret: 's3cret',
       redirectUri: 'http://localhost:3000/auth/cb',
       userAgentRedirectUri: 'http://localhost:8080/#/authenticated',
+      userAgentPostLogoutRedirectUri: 'http://localhost:8080',
       timeout: 3000
     },
     clockTolerance: 5
