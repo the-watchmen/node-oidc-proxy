@@ -2,13 +2,13 @@ import assert from 'assert'
 import qs from 'querystring'
 import {URL} from 'url'
 import jwt from 'jsonwebtoken'
-import debug from 'debug'
+import debug from '@watchmen/debug'
 import {defineSupportCode} from 'cucumber'
 import {asTemplate, evalInContext, getUrl, setState} from '@watchmen/test-helpr'
 import config from 'config'
 import {getFormAction, getCookieAxios} from '../../../shared/test-helper'
 
-const dbg = debug('test:mock:steps')
+const dbg = debug(__filename)
 
 const port = config.get('listener.port')
 const axios = getCookieAxios()

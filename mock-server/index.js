@@ -1,11 +1,11 @@
-import debug from 'debug'
+import debug from '@watchmen/debug'
 import jsonServer from 'json-server'
 import jwt from 'express-jwt'
 import {sleep} from '@watchmen/helpr'
 import config from 'config'
 import resources from './resources'
 
-const dbg = debug('test:mock')
+const dbg = debug(__filename)
 
 // think: const app = express()
 const app = jsonServer.create()

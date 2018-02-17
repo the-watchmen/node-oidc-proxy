@@ -4,7 +4,7 @@ import RandExp from 'randexp'
 import resource from './resource'
 
 const ssnRe = new RandExp(/\d{3}-\d{2}-\d{4}/)
-const phoneRe = new RandExp(/\d{3}\-\d{3}-\d{4}/)
+const phoneRe = new RandExp(/\d{3}-\d{3}-\d{4}/)
 const zipRe = new RandExp(/\d{5}/)
 
 export default Object.assign({}, resource, {

@@ -1,11 +1,11 @@
-import debug from 'debug'
+import debug from '@watchmen/debug'
 import {defineSupportCode} from 'cucumber'
 import {initState} from '@watchmen/test-helpr'
 import config from 'config'
 import jsonServer from 'json-server'
 import jwt from 'express-jwt'
 
-const dbg = debug('test:support:hooks')
+const dbg = debug(__filename)
 dbg('loaded hooks')
 
 const secret = config.get('oauth.client.secret')

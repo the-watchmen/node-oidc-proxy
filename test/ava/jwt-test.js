@@ -1,9 +1,9 @@
 import test from 'ava'
-import debug from 'debug'
+import debug from '@watchmen/debug'
 import jwt from 'jsonwebtoken'
 // import _ from 'lodash'
 
-const dbg = debug('test:jwt')
+const dbg = debug(__filename)
 
 test('basic', t => {
   const secret = 's3cret'

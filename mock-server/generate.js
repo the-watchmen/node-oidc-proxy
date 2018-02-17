@@ -1,9 +1,9 @@
 import fs from 'fs'
-import debug from 'debug'
+import debug from '@watchmen/debug'
 import _ from 'lodash'
 import resources from './resources'
 
-const dbg = debug('app:mock:generate')
+const dbg = debug(__filename)
 const db = 'mock-server/db.json'
 
 dbg('generating mock data file=%o', db)

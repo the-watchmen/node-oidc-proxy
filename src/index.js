@@ -3,14 +3,14 @@ import assert from 'assert'
 import _ from 'lodash'
 import bodyParser from 'body-parser'
 import cors from 'cors'
-import debug from 'debug'
+import debug from '@watchmen/debug'
 import config from 'config'
 import express from 'express'
 import session from 'express-session'
 import oidcClient from 'openid-client'
 import proxy from 'express-http-proxy'
 
-const dbg = debug('lib:oidc-proxy')
+const dbg = debug(__filename)
 
 const tokenKey = 'session.tokens'
 const ctxKey = 'session.ctx'
@@ -138,10 +138,15 @@ export default async function({sessionStrategy} = {}) {
   )
 
   // eslint-disable-next-line no-unused-vars
-  app.get('/logout', function(req, res) {
+  app.get('/logout', async (req, res) => {
     // http://auth-server/auth/realms/{realm-name}/protocol/openid-connect/logout?redirect_uri=encodedRedirectUri
-    throw new Error('logout not implemented')
-    // res.redirect('/')
+    const client = await getClient()
+    const endpoint = client.issuer.end_session_endpoint
+    const idToken = _.get(req, `${tokenKey}.id_token`)
+    const redirect = req.query.redirectUri
+    dbg('logout: endpoint=%o, id-token=%o, redirect=%o', endpoint, idToken, redirect)
+    // throw new Error('logout not implemented')
+    res.redirect(`${endpoint}?id_token_hint=${idToken}&post_logout_redirect_uri=${redirect}`)
   })
 
   // eslint-disable-next-line no-unused-vars

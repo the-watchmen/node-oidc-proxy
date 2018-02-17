@@ -5,18 +5,10 @@
       {
         "targets": {
           "node": "current"
-        },
-        "useBuiltIns": true
+        }
       }
-    ]
-  ],
-  "plugins": [
-    [
-      "transform-object-rest-spread",
-      {
-        "useBuiltIns": true
-      }
-    ]
+    ],
+    "stage-0"
   ],
   "sourceMaps": true,
   "retainLines": true

@@ -1,8 +1,8 @@
-import debug from 'debug'
+import debug from '@watchmen/debug'
 import config from 'config'
 import getCore from '../../src'
 
-const dbg = debug('test:oidc-proxy')
+const dbg = debug(__filename)
 
 const port = config.get('listener.port')
 

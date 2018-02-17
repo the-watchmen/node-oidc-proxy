@@ -1,7 +1,7 @@
 import _ from 'lodash'
-import debug from 'debug'
+import debug from '@watchmen/debug'
 
-const dbg = debug('app:mock:shared')
+const dbg = debug(__filename)
 /*
 api/patients?offset={offset}&limit={limit}&sort=[-|+]{sort}
 &firstName={firstName}&lastName={lastName}&mrn={mrn}&dob={dob}

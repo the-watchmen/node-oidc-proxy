@@ -1,11 +1,11 @@
 import assert from 'assert'
-import debug from 'debug'
+import debug from '@watchmen/debug'
 import htmlParser from 'htmlparser2'
 import axios from 'axios'
 import axiosCookieJarSupport from '@3846masa/axios-cookiejar-support'
 import tough from 'tough-cookie'
 
-const dbg = debug('test:shared:helper')
+const dbg = debug(__filename)
 
 export function getFormAction({html}) {
   let action
@@ -28,6 +28,8 @@ export function getFormAction({html}) {
 
 export function getCookieAxios() {
   const cookieJar = new tough.CookieJar()
+  // axios.defaults.jar = cookieJar
+  // axios.defaults.withCredentials = true
   const _axios = axios.create({
     withCredentials: true,
     jar: cookieJar
