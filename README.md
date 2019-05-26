@@ -59,7 +59,7 @@ a pattern using express for server side [openid-connect](https://openid.net/conn
 1. to call a service decorated with a header like:
 
     ```
-    Authentication: Bearer {the-access-token}`
+    Authentication: Bearer {the-access-token}
     ```
 
     use:
