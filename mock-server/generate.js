@@ -9,7 +9,7 @@ const db = 'mock-server/db.json'
 dbg('generating mock data file=%o', db)
 
 const data = _.mapValues(resources, val => {
-  return val.generate()
+	return val.generate()
 })
 
 fs.writeFileSync(db, JSON.stringify(data, null, 2), 'utf-8')
