@@ -1,33 +1,27 @@
 import test from 'ava'
 import debug from '@watchmen/debug'
-import oidcClient from 'openid-client'
-// import _ from 'lodash'
+import {getIssuer, getClient, getAuthUrl, getContext} from '../../src/helper'
 
 const dbg = debug(__filename)
 
-test('discover', async t => {
-  const Issuer = oidcClient.Issuer
+test('issuer', async t => {
+	const issuer = await getIssuer()
+	t.truthy(issuer)
+})
 
-  const issuer = await Issuer.discover(
-    'https://auth.lab.ds.aetna.com/auth/realms/realm-1/.well-known/openid-configuration'
-  )
+test('metadata', async t => {
+	const issuer = await getIssuer()
+	dbg('metadata=%O', issuer.metadata)
+	t.truthy(issuer.metadata)
+})
 
-  dbg('issuer properties')
-  Reflect.ownKeys(issuer).forEach(key => {
-    const val = issuer[key]
-    dbg(`${key} = [${val}]`)
-    val === false || val === undefined || t.truthy(val)
-  })
-  //---
-  const client = new issuer.Client({
-    client_id: 'client-2',
-    client_secret: '62597053-51ae-49e2-85b8-75ddf0961042'
-  })
-  t.truthy(client)
-  //---
-  const url = client.authorizationUrl({
-    redirect_uri: 'https://localhost:8080/callback',
-    scope: 'openid email'
-  })
-  dbg('url=%s', url)
+test('client', async t => {
+	const client = await getClient()
+	t.truthy(client)
+})
+
+test('url', async t => {
+	const url = await getAuthUrl({context: getContext()})
+	dbg('auth-url=%o', url)
+	t.truthy(url)
 })
