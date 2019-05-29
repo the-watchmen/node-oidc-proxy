@@ -4,24 +4,37 @@ import debug from '@watchmen/debug'
 import config from 'config'
 import pretty from 'pretty'
 import {getFormAction, getCookieAxios} from '../shared/test-helper'
-import runProxy from '../shared/run-proxy'
-import runRedirect from '../shared/run-redirect'
+// import getProxyApp from '../../src'
+// import getUserAgentApp from '../shared/get-user-agent'
+// import {startTerminus} from '../shared/terminus'
+import all from '../shared/run-all'
 
 const dbg = debug(__filename)
 const axios = getCookieAxios()
 
-const {
-	usernameField,
-	passwordField,
-	isActionRelative,
-	url: issuerUrl,
-	delegatedUrl
-} = config.oauth.issuer
-const {port: proxyPort} = config.listener
+const issuerUrl = config.get('oauth.issuer.url')
+
+const {usernameField, passwordField, isActionRelative, delegatedUrl} = config.get(
+	'test.oauth.issuer'
+)
 
 test('tokens', async t => {
-	await runRedirect()
-	await runProxy()
+	await all
+	// startTerminus({
+	// 	app: await getUserAgentApp(),
+	// 	port: config.get('userAgent.port'),
+	// 	name: 'user-agent',
+	// 	dbg
+	// })
+
+	const proxyPort = config.get('oauth.client.port')
+
+	// startTerminus({
+	// 	app: await getProxyApp(),
+	// 	port: proxyPort,
+	// 	name: 'proxy',
+	// 	dbg
+	// })
 
 	let result = await axios.get(`http://localhost:${proxyPort}/login`)
 	dbg('result.data=%s', pretty(result.data, {ocd: true}))
@@ -30,9 +43,9 @@ test('tokens', async t => {
 
 	// from local config to keep out of scm
 	//
-	const {name, password} = config.user
+	const {name, password} = config.get('test.oauth.issuer.user')
 
-	const _action = isActionRelative ? action : `${delegatedUrl || issuerUrl}${action}`
+	const _action = isActionRelative ? `${delegatedUrl || issuerUrl}${action}` : action
 	dbg('action=%o, _action=%o', action, _action)
 
 	result = await axios.post(
@@ -48,9 +61,13 @@ test('tokens', async t => {
 			headers: {
 				'Content-type': 'application/x-www-form-urlencoded'
 			},
-			maxRedirects: 2,
-			validateStatus: status => status === 302
+			// maxRedirects: 3,
+			validateStatus(status) {
+				dbg('validate-status: status=%o', status)
+				return status === 302
+			}
 		}
 	)
 	t.is(result.status, 200)
+	dbg('result.data=%O', result.data)
 })

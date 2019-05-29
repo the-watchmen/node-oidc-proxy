@@ -16,15 +16,16 @@ const dbg = debug(__filename)
 
 const tokenKey = 'session.tokens'
 const ctxKey = 'session.ctx'
-const {client: clientCfg} = config.oauth
-const {userAgent} = config
+const authRedirect = config.get('oauth.client.redirect.auth')
+const userAgent = config.get('userAgent')
+const responseDecorator = _.get(config, 'api.responseDecorator')
 
 process.on('unhandledRejection', err => {
 	dbg('unhandled-rejection: %o', err)
 	process.exit(1)
 })
 
-export default async function({sessionStrategy} = {}) {
+export default async function({app, sessionStrategy} = {}) {
 	dbg('session-strategy=%o', sessionStrategy)
 	let store
 	if (sessionStrategy) {
@@ -39,7 +40,7 @@ export default async function({sessionStrategy} = {}) {
 
 	const client = await getClient()
 
-	const app = express()
+	app = app || express()
 
 	app.use(
 		session({
@@ -53,7 +54,7 @@ export default async function({sessionStrategy} = {}) {
 	// calls to /proxy/... will pass thru after appending token obtained from session
 	app.use(
 		'/proxy',
-		proxy(config.api.url, {
+		proxy(config.get('api.url'), {
 			preserveReqSession: true,
 			proxyReqOptDecorator(proxyReqOpts, srcReq) {
 				// dbg('proxy: headers=%o', srcReq.headers)
@@ -64,10 +65,21 @@ export default async function({sessionStrategy} = {}) {
 					dbg('proxy-req-opt-decorator: warning, unable to obtain token from session...')
 				}
 
-				// proxyReqOpts.rejectUnauthorized = false
 				proxyReqOpts.session = null
 				return proxyReqOpts
 			},
+			...(responseDecorator && {
+				userResDecorator: (res, _data) => {
+					const data = JSON.parse(_data.toString('utf8'))
+					dbg('user-res-decorator: data=%o', data)
+					return {...responseDecorator, data}
+				}
+			}),
+			// userResDecorator(res, _data) {
+			// 	const data = JSON.parse(_data.toString('utf8'))
+			// 	dbg('user-res-decorator: data=%o', data)
+			// 	return {...responseDecorator, data}
+			// },
 			proxyErrorHandler(err, res, next) {
 				dbg('proxy-error-handler: err=%o', err)
 				next(err)
@@ -85,7 +97,12 @@ export default async function({sessionStrategy} = {}) {
 	})
 
 	app.get('/', (req, res) => {
-		res.send(`proxy: session active=${_.get(req, tokenKey) !== undefined}`)
+		webHelpr.dbgReq({dbg, req})
+		const isActive = _.get(req, tokenKey) !== undefined
+		res.send({
+			isActive,
+			responseDecorator
+		})
 	})
 
 	app.get('/login', async (req, res) => {
@@ -105,7 +122,7 @@ export default async function({sessionStrategy} = {}) {
 		const ctx = _.get(req, ctxKey)
 		delete req[ctxKey]
 		dbg('/auth/cb: params=%o, ctx=%o', params, ctx)
-		const tokens = await client.callback(clientCfg.redirect.auth, params, ctx)
+		const tokens = await client.callback(authRedirect, params, ctx)
 		dbg('/auth/cb: tokens=%o', tokens)
 		_.set(req, tokenKey, tokens)
 		const {id_token, access_token, refresh_token} = tokens

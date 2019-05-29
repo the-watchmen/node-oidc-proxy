@@ -32,11 +32,8 @@ defineSupportCode(({BeforeAll, Before}) => {
 	// https://github.com/cucumber/cucumber-js/issues/918
 	BeforeAll(async () => {
 		dbg('before-all')
-		await require('../../../shared/mock-oidc-provider')
-		dbg('started oidc-provider...')
-
-		await require('../../../shared/test-proxy')()
-		dbg('started test-proxy...')
+		await require('../../../shared/run-all')
+		dbg('started all components...')
 	})
 
 	Before(async function() {
