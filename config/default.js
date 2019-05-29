@@ -1,48 +1,42 @@
-const oauth = {
-	issuer: {
-		port: 3002
-	}
-}
-
-const client = {
-	redirect: {
-		base: 'http://localhost:3000'
-	}
-}
-
+// stuff that is null here needs to specified by configuring instance
+//
 const userAgent = {
-	base: 'http://localhost',
-	port: 8080,
+	port: null,
 	path: {
 		auth: 'auth/cb',
 		logout: 'logout/cb'
 	}
 }
 
+userAgent.url = null
+
+const client = {
+	port: null,
+	url: null,
+	redirect: {
+		path: {
+			auth: 'auth/cb',
+			logout: 'logout/cb'
+		}
+	}
+}
+
 module.exports = {
-	listener: {
-		port: 3000
-	},
 	session: {
 		secret: 's3cret'
 	},
 	oauth: {
 		issuer: {
-			...oauth.issuer,
-			url: `http://localhost:${oauth.issuer.port}`,
-			// following settings for https://github.com/panva/node-oidc-provider
-			// override in issuer specific configs (e.g. keycloak, etc)
-			//
-			isActionRelative: true,
-			usernameField: 'login',
-			passwordField: 'password'
+			url: null
 		},
 		client: {
-			id: 'client-2',
-			secret: 's3cret',
+			...client,
+			id: null,
+			secret: null,
 			redirect: {
-				auth: `${client.redirect.base}/auth/cb`,
-				logout: `${client.redirect.base}/logout/cb`
+				...client.redirect,
+				auth: `${client.url}/${client.redirect.path.auth}`,
+				logout: `${client.url}/${client.redirect.path.logout}`
 			},
 			timeout: 3000,
 			// responseType: 'id_token token',
@@ -56,20 +50,11 @@ module.exports = {
 		includeAccessToken: true,
 		includeRefreshToken: true,
 		redirect: {
-			auth: `${userAgent.base}:${userAgent.port}/${userAgent.path.auth}`,
-			logout: `${userAgent.base}:${userAgent.port}/${userAgent.path.logout}`
+			auth: `${userAgent.url}/${userAgent.path.auth}`,
+			logout: `${userAgent.url}/${userAgent.path.logout}`
 		}
 	},
-	idp: {features: {sessionManagement: true}},
 	api: {
-		// assumes all api's at single location,
-		// would need to be revisited if this wasn't the case...
-		url: 'http://localhost:3001'
-	},
-	mock: {
-		sleep: 1000,
-		port: 3001,
-		url: 'http://localhost:3001',
-		db: 'mock-server/db.json'
+		url: null
 	}
 }

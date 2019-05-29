@@ -4,17 +4,16 @@ import test from 'ava'
 import debug from '@watchmen/debug'
 import config from 'config'
 import {getFormAction, getCookieAxios} from '../shared/test-helper'
-import '../shared/mock-oidc-provider'
+import all from '../shared/run-all'
 import {getClient, getAuthUrl, getContext} from '../../src/helper'
 
 const dbg = debug(__filename)
 
 const axios = getCookieAxios()
 
-const oauthCfg = config.get('oauth')
-const clientCfg = oauthCfg.client
-
 test('tokens', async t => {
+	await all
+
 	const client = await getClient()
 	const context = getContext()
 	const url = await getAuthUrl({client, context})
@@ -26,9 +25,9 @@ test('tokens', async t => {
 
 	// from local config to keep out of scm
 	//
-	const {name, password} = config.user
+	const {name, password} = config.get('test.oauth.issuer.user')
 	result = await axios.post(
-		`${oauthCfg.issuer.url}${action}`,
+		`${config.get('oauth.issuer.url')}${action}`,
 		// https://github.com/axios/axios/issues/362#issuecomment-234844677
 		//
 		qs.stringify({
@@ -40,7 +39,7 @@ test('tokens', async t => {
 			headers: {
 				'Content-type': 'application/x-www-form-urlencoded'
 			},
-			maxRedirects: 1,
+			// maxRedirects: 1,
 			validateStatus: status => status === 302
 		}
 	)
@@ -49,7 +48,9 @@ test('tokens', async t => {
 	dbg('cb=%o', location)
 	t.truthy(location)
 	const cb = new URL(location)
-	t.is(`${cb.protocol}//${cb.host}${cb.pathname}`, clientCfg.redirectUri)
+	const redirect = config.get('oauth.client.redirect.auth')
+
+	t.is(`${cb.protocol}//${cb.host}${cb.pathname}`, redirect)
 	const sp = cb.searchParams
 	t.truthy(sp.get('code'))
 	t.truthy(sp.get('state'))
@@ -59,6 +60,6 @@ test('tokens', async t => {
 		params[key] = val
 	})
 	dbg('params=%o', params)
-	const tokens = await client.authorizationCallback(clientCfg.redirectUri, params, context)
+	const tokens = await client.authorizationCallback(redirect, params, context)
 	dbg('tokens=%o', tokens)
 })
