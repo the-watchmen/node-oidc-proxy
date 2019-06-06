@@ -101,7 +101,7 @@ export default async function({app, sessionStrategy} = {}) {
 		const isActive = _.get(req, tokenKey) !== undefined
 		res.send({
 			isActive,
-			responseDecorator
+			...responseDecorator
 		})
 	})
 
