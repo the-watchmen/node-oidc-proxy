@@ -1,7 +1,8 @@
 import debug from '@watchmen/debug'
 import {pretty} from '@watchmen/helpr'
 import config from 'config'
-import getProxyApp from '../../src'
+import express from 'express'
+import getProxyRouter from '../../src'
 import {startTerminus} from './terminus'
 import getProviderApp from './get-provider'
 import getMockApp from './mock-server'
@@ -30,8 +31,12 @@ export default (async function() {
 		name: 'api',
 		dbg
 	})
+
+	const app = express()
+	app.use('/', await getProxyRouter())
+
 	startTerminus({
-		app: await getProxyApp(),
+		app,
 		port: config.get('oauth.client.port'),
 		name: 'proxy',
 		dbg
