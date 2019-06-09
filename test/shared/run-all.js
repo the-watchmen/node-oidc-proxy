@@ -1,7 +1,9 @@
 import debug from '@watchmen/debug'
 import {pretty} from '@watchmen/helpr'
 import config from 'config'
-import getProxyApp from '../../src'
+import express from 'express'
+import session from 'express-session'
+import getProxyRouter from '../../src'
 import {startTerminus} from './terminus'
 import getProviderApp from './get-provider'
 import getMockApp from './mock-server'
@@ -18,20 +20,37 @@ export default (async function() {
 		name: 'user-agent',
 		dbg
 	})
+
 	startTerminus({
 		app: await getProviderApp(),
 		port: config.get('oauth.issuer.port'),
 		name: 'idp',
 		dbg
 	})
+
 	startTerminus({
 		app: getMockApp(),
 		port: config.get('test.api.port'),
 		name: 'api',
 		dbg
 	})
+
+	const app = express()
+
+	app.use(
+		session({
+			// https://github.com/expressjs/session#sessionoptions
+			store: null,
+			secret: config.get('session.secret'),
+			resave: false,
+			saveUninitialized: false
+		})
+	)
+
+	app.use('/', await getProxyRouter())
+
 	startTerminus({
-		app: await getProxyApp(),
+		app,
 		port: config.get('oauth.client.port'),
 		name: 'proxy',
 		dbg
