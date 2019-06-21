@@ -2,36 +2,39 @@ import dflt from './default'
 
 // ports:
 // user-agent: 3000
-// client(proxy): 3001
-// idp: 3002
-// api: 3003
+// client(proxy): 3000
+// idp: 3001
+// api: 3000
 //
 const userAgent = {
 	port: 3000,
-	proxyPath: 'oidc'
+	proxyPath: 'proxy',
+	path: 'user-agent'
 }
 
-userAgent.url = `http://localhost:${userAgent.port}`
+userAgent.url = `http://localhost:${userAgent.port}/${userAgent.path}`
 
 const client = {
-	port: 3001,
+	port: 3000,
 	redirect: {},
-	proxyPath: 'api'
+	proxyPath: 'proxy',
+	path: 'oidc'
 }
 
-client.url = `http://localhost:${client.port}`
+client.url = `http://localhost:${client.port}/${client.path}`
 
 const oauth = {
 	issuer: {
-		port: 3002
+		port: 3001
 	}
 }
 
 const api = {
-	port: 3003
+	port: 3000,
+	path: 'api'
 }
 
-api.url = `http://localhost:${api.port}`
+api.url = `http://localhost:${api.port}/${api.path}`
 
 module.exports = {
 	oauth: {

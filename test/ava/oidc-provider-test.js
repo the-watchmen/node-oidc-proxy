@@ -4,7 +4,7 @@ import test from 'ava'
 import debug from '@watchmen/debug'
 import config from 'config'
 import {getFormAction, getCookieAxios} from '../shared/test-helper'
-import all from '../shared/run-all'
+import all from '../shared/run-separate'
 import {getClient, getAuthUrl, getContext} from '../../src/helper'
 
 const dbg = debug(__filename)

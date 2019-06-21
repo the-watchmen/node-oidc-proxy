@@ -15,6 +15,8 @@ const tokenKey = 'session.tokens'
 const ctxKey = 'session.ctx'
 const authRedirect = config.get('oauth.client.redirect.auth')
 const userAgent = config.get('userAgent')
+const proxyPath = config.get('oauth.client.proxyPath')
+const apiUrl = config.get('api.url')
 
 process.on('unhandledRejection', err => {
 	dbg('unhandled-rejection: %o', err)
@@ -33,6 +35,11 @@ export default async function() {
 		// checkmarx complaint?
 		res.setHeader('Content-Security-Policy', 'default-src "none"; connect-src "self" https:;')
 		next()
+	})
+
+	router.get('/', (req, res) => {
+		webHelpr.dbgReq({dbg, req})
+		res.send({message: 'welcome'})
 	})
 
 	router.get('/login', async (req, res) => {
@@ -69,10 +76,11 @@ export default async function() {
 	})
 
 	router.use(
-		'/proxy',
-		proxy(config.get('api.url'), {
+		`/${proxyPath}`,
+		proxy(apiUrl, {
 			preserveReqSession: true,
 			proxyReqOptDecorator(proxyReqOpts, srcReq) {
+				dbg('proxy-req-opt-decorator')
 				const tokens = _.get(srcReq, tokenKey)
 				if (tokens) {
 					proxyReqOpts.headers.Authorization = `Bearer ${tokens.access_token}`
@@ -91,11 +99,16 @@ export default async function() {
 	)
 
 	router.get('/logout', async (req, res) => {
+		webHelpr.dbgReq({dbg, req})
 		const context = _.get(req, ctxKey)
 		const hint = _.get(req, `${tokenKey}.id_token`)
-		const url = await getLogoutUrl({client, context, hint})
-		dbg('/logout: url=%o', url)
-		res.redirect(url)
+		if (context && hint) {
+			const url = await getLogoutUrl({client, context, hint})
+			dbg('/logout: url=%o', url)
+			res.redirect(url)
+		} else {
+			res.send({message: 'no session found'})
+		}
 	})
 
 	router.get('/logout/cb', async (req, res) => {

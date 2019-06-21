@@ -1,6 +1,6 @@
 {
   "name": "@watchmen/oidc-proxy",
-  "version": "2.1.1",
+  "version": "3.0.1",
   "description": "",
   "main": "dist/index.js",
   "author": "tk",
@@ -15,9 +15,11 @@
     "prebuild": "yarn run test",
     "build": "babel ./src -d ./dist",
     "fix": "xo --fix",
-    "run-all": "cross-env NODE_ENV=auto DEBUG=dbg:*,app:*,lib:*,test:*,oidc-provider:*,oidc-client:* babel-node test/shared/run-all",
+    "run-separate": "cross-env NODE_ENV=auto DEBUG=dbg:*,app:*,lib:*,test:*,oidc-provider:*,oidc-client:* babel-watch test/shared/run-separate",
+    "run-combined": "cross-env NODE_ENV=auto-combined DEBUG=dbg:*,app:*,lib:*,test:*,oidc-provider:*,oidc-client:* babel-watch test/shared/run-combined",
     "cuke": "cross-env DEBUG=dbg:*,test:*,app:*,lib:*,oidc-provider:* NODE_ENV=auto cucumber-js --compiler=js:babel-polyfill --compiler=js:babel-core/register test/cuke",
-    "cuke-feature": "cross-env DEBUG=dbg:*,test:*,app:*,lib:*,oidc-provider:* NODE_ENV=auto cucumber-js --compiler=js:babel-polyfill --compiler=js:babel-core/register"
+    "cuke-feature": "cross-env DEBUG=dbg:*,test:*,app:*,lib:*,oidc-provider:* NODE_ENV=auto cucumber-js --compiler=js:babel-polyfill --compiler=js:babel-core/register",
+    "prepare": "install-self-peers -- --ignore-scripts"
   },
   "dependencies": {
     "@babel/polyfill": "7.4.4",
@@ -28,33 +30,35 @@
     "cors": "2.8.5",
     "express": "4.17.1",
     "express-http-proxy": "1.5.1",
-    "express-session": "1.16.1",
+    "express-session": "1.16.2",
     "fs-extra": "8.0.1",
     "lodash": "4.17.11",
     "nocache": "^2.1.0",
     "openid-client": "3.1.1"
   },
   "devDependencies": {
-    "@3846masa/axios-cookiejar-support": "0.4.2",
+    "@3846masa/axios-cookiejar-support": "0.5.0",
     "@babel/cli": "7.4.4",
     "@babel/core": "7.4.5",
     "@babel/node": "7.4.5",
     "@babel/preset-env": "7.4.5",
     "@babel/register": "7.4.4",
+    "@team-griffin/install-self-peers": "^1.1.1",
     "@watchmen/cuke-helpr": "3.2.0",
     "@watchmen/helpr": "2.3.8",
     "@watchmen/json-server-helpr": "1.1.0",
     "@watchmen/test-helpr": "0.3.4",
-    "@watchmen/web-helpr": "2.4.0",
+    "@watchmen/web-helpr": "2.5.0",
     "ava": "1.4.1",
     "axios": "0.19.0",
+    "babel-watch": "^7.0.0",
     "base64url": "3.0.1",
     "child-process-promise": "2.2.1",
     "cross-env": "5.2.0",
     "cucumber": "5.1.0",
     "express-jwt": "5.3.1",
     "faker": "4.1.0",
-    "htmlparser2": "3.10.1",
+    "htmlparser2": "^3.10.1",
     "json-server": "0.15.0",
     "jsonwebtoken": "8.5.1",
     "node-jose": "1.1.3",
@@ -90,5 +94,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "peerDependencies": {
+    "himalaya": ">=1"
   }
 }
