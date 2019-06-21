@@ -1,5 +1,6 @@
 import http from 'http'
 import {createTerminus} from '@godaddy/terminus'
+import express from 'express'
 
 export function getTerminus({app, dbg}) {
 	const server = http.createServer(app)
@@ -22,9 +23,13 @@ export function getTerminus({app, dbg}) {
 	return server
 }
 
-export function startTerminus({app, port, name, dbg}) {
-	// dbg('starting terminus-server with app=%o on port=%o', name, port)
-	const server = getTerminus({app, dbg})
+export function startTerminus({app, router, port, name, dbg}) {
+	const _app = app || express()
+	if (router) {
+		app.use('/', router)
+	}
+
+	const server = getTerminus({app: _app, dbg})
 	server.listen(port, () => {
 		dbg('terminus for app=%o listening on port=%o', name, port)
 	})

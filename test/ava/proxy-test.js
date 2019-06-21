@@ -7,7 +7,7 @@ import {getFormAction, getCookieAxios} from '../shared/test-helper'
 // import getProxyApp from '../../src'
 // import getUserAgentApp from '../shared/get-user-agent'
 // import {startTerminus} from '../shared/terminus'
-import all from '../shared/run-all'
+import all from '../shared/run-separate'
 
 const dbg = debug(__filename)
 const axios = getCookieAxios()

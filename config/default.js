@@ -2,10 +2,8 @@
 //
 const userAgent = {
 	port: null,
-	path: {
-		auth: 'auth/cb',
-		logout: 'logout/cb'
-	}
+	authPath: 'auth/cb',
+	logoutPath: 'logout/cb'
 }
 
 userAgent.url = null
@@ -50,8 +48,8 @@ module.exports = {
 		includeAccessToken: true,
 		includeRefreshToken: true,
 		redirect: {
-			auth: `${userAgent.url}/${userAgent.path.auth}`,
-			logout: `${userAgent.url}/${userAgent.path.logout}`
+			auth: `${userAgent.url}/${userAgent.authPath}`,
+			logout: `${userAgent.url}/${userAgent.logoutPath}`
 		}
 	},
 	api: {

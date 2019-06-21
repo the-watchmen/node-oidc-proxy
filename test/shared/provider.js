@@ -3,7 +3,6 @@ import debug from '@watchmen/debug'
 import config from 'config'
 import jwt from 'jsonwebtoken'
 import _ from 'lodash'
-import express from 'express'
 
 /* eslint-disable camelcase */
 
@@ -19,7 +18,7 @@ const _client = {
 
 dbg('_client=%o', _client)
 
-export default async function() {
+async function get() {
 	const provider = new Provider(config.get('oauth.issuer.url'), {
 		...config.get('test.oauth.issuer.config')
 		// clients: [_client]
@@ -49,8 +48,10 @@ export default async function() {
 
 	const clients = [_client]
 	await provider.initialize({clients})
-	const app = express()
-	app.use(provider.callback)
-	return app
-	// return provider
+	return provider
+}
+
+export default async function() {
+	const provider = await get()
+	return provider.callback
 }

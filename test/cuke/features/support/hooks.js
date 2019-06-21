@@ -32,7 +32,7 @@ defineSupportCode(({BeforeAll, Before}) => {
 	// https://github.com/cucumber/cucumber-js/issues/918
 	BeforeAll(async () => {
 		dbg('before-all')
-		await require('../../../shared/run-all')
+		await require('../../../shared/run-separate')
 		dbg('started all components...')
 	})
 

@@ -6,6 +6,7 @@ import {sleep} from '@watchmen/helpr'
 import config from 'config'
 import _ from 'lodash'
 import nocache from 'nocache'
+import express from 'express'
 import resources from './resources'
 
 const dbg = debug(__filename)
@@ -22,16 +23,16 @@ if (credentialsRequired) {
 const _sleep = config.get('test.api.sleep')
 
 export default function() {
-	const app = jsonServer.create()
+	const router = express.Router()
+	const _router = jsonServer.router(path.join(__dirname, 'db.json'))
 
-	app.use(jwt({secret, credentialsRequired}).unless({path: whitelist}), (req, res, next) => {
+	router.use(jwt({secret, credentialsRequired}).unless({path: whitelist}), (req, res, next) => {
 		dbg('jwt-check: req.user=%o', req.user)
 		next()
 	})
 
-	app.use(jsonServer.defaults())
+	// router.use(jsonServer.defaults())
 
-	const router = jsonServer.router(path.join(__dirname, 'db.json'))
 	router.use(nocache())
 
 	router.use((req, res, next) => {
@@ -48,7 +49,8 @@ export default function() {
 		next()
 	})
 
-	router.render = function(req, res) {
+	_router.render = function(req, res) {
+		dbg('router.render')
 		let result = res.locals.data
 		if (req.method === 'GET') {
 			const index = getIndex(req.url)
@@ -63,17 +65,17 @@ export default function() {
 		res.jsonp(result)
 	}
 
-	app.use(router)
-
 	// eslint-disable-next-line no-unused-vars
-	app.use((err, req, res, next) => {
+	router.use((err, req, res, next) => {
 		if (err.name === 'UnauthorizedError') {
 			dbg('unauthorized-error')
-			res.status(401).send({msg: 'token missing or invalid'})
+			res.status(401).send({message: 'token missing or invalid'})
 		}
 	})
 
-	return app
+	router.use(_router)
+
+	return router
 }
 
 export function getIndex(url) {
@@ -83,5 +85,5 @@ export function getIndex(url) {
 	const toks = url.split('?')[0].split('/')
 	const result = toks.length === 2 && !['db', '__rules'].includes(toks[1]) && toks[1]
 	dbg('get-index: toks=%o, url=%o, result=%o', toks, url, result)
-	return result
+	return ['favicon.ico'].includes() && result
 }
