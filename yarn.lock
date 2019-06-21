@@ -763,6 +763,15 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
+"@team-griffin/install-self-peers@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@team-griffin/install-self-peers/-/install-self-peers-1.1.1.tgz#de0fd354be3f44dfd84dd79bc011d8a3af38e354"
+  integrity sha1-3g/TVL4/RN/YTdebwBHYo68441Q=
+  dependencies:
+    cross-spawn "^5.1.0"
+    minimist "^1.2.0"
+    ramda "^0.23.0"
+
 "@types/events@*":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@types/events/-/events-3.0.0.tgz#2862f3f58a9a7f7c3e78d79f130dd4d71c25c2a7"
@@ -2055,7 +2064,7 @@ cross-spawn@^4.0.2:
     lru-cache "^4.0.1"
     which "^1.2.9"
 
-cross-spawn@^5.0.1:
+cross-spawn@^5.0.1, cross-spawn@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-5.1.0.tgz#e8bd0efee58fcff6f8f94510a0a554bbfa235449"
   integrity sha1-6L0O/uWPz/b4+UUQoKVUu/ojVEk=
@@ -6097,6 +6106,11 @@ quick-lru@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/quick-lru/-/quick-lru-1.1.0.tgz#4360b17c61136ad38078397ff11416e186dcfbb8"
   integrity sha1-Q2CxfGETatOAeDl/8RQW4Ybc+7g=
+
+ramda@^0.23.0:
+  version "0.23.0"
+  resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.23.0.tgz#ccd13fff73497a93974e3e86327bfd87bd6e8e2b"
+  integrity sha1-zNE//3NJepOXTj6GMnv9h71ujis=
 
 randexp@0.5.3:
   version "0.5.3"
