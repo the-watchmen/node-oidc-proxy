@@ -4,9 +4,6 @@ import debug from '@watchmen/debug'
 import config from 'config'
 import pretty from 'pretty'
 import {getFormAction, getCookieAxios} from '../shared/test-helper'
-// import getProxyApp from '../../src'
-// import getUserAgentApp from '../shared/get-user-agent'
-// import {startTerminus} from '../shared/terminus'
 import all from '../shared/run-separate'
 
 const dbg = debug(__filename)

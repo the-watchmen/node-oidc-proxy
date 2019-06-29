@@ -28,8 +28,9 @@ export default function({decorate}) {
 		`/${proxyPath}`,
 		proxy(clientUrl, {
 			preserveReqSession: true,
-			proxyReqOptDecorator(proxyReqOpts) {
-				dbg('proxy-req-opt-decorator')
+			proxyReqOptDecorator(proxyReqOpts, srcReq) {
+				// dbg('proxy-req-opt-decorator')
+				webHelpr.dbgReq({msg: 'proxy-req-opt-decorator', dbg, req: srcReq})
 				return proxyReqOpts
 			},
 			userResDecorator(proxyRes, proxyResData, userReq, userRes) {

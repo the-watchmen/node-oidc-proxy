@@ -5,9 +5,9 @@ import express from 'express'
 import session from 'express-session'
 import _ from 'lodash'
 import getProxyRouter from '../../src'
-import getUserAgentRouter from '../../src/helper/user-agent'
-import getMockRouter from '../../src/helper/mock'
-import {startTerminus} from '../../src/helper/terminus'
+import getUserAgentRouter from '../../src/extra/user-agent'
+import getMockRouter from '../../src/extra/mock'
+import {startTerminus} from '../../src/extra/terminus'
 import getProviderRouter from './provider'
 
 const dbg = debug(__filename)

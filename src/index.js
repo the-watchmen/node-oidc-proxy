@@ -44,7 +44,7 @@ export default async function() {
 
 	router.get('/login', async (req, res) => {
 		const context = getContext()
-		dbg('context=%o', context)
+		dbg('/login: context=%o', context)
 		_.set(req, ctxKey, context)
 
 		const url = await getAuthUrl({client, context})
@@ -80,7 +80,8 @@ export default async function() {
 		proxy(apiUrl, {
 			preserveReqSession: true,
 			proxyReqOptDecorator(proxyReqOpts, srcReq) {
-				dbg('proxy-req-opt-decorator')
+				// dbg('proxy-req-opt-decorator')
+				webHelpr.dbgReq({msg: 'proxy-req-opt-decorator', dbg, req: srcReq})
 				const tokens = _.get(srcReq, tokenKey)
 				if (tokens) {
 					proxyReqOpts.headers.Authorization = `Bearer ${tokens.access_token}`

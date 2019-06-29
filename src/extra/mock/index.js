@@ -2,7 +2,6 @@ import path from 'path'
 import debug from '@watchmen/debug'
 import jsonServer from 'json-server'
 import jwt from 'express-jwt'
-import {sleep} from '@watchmen/helpr'
 import config from 'config'
 import _ from 'lodash'
 import nocache from 'nocache'
@@ -11,7 +10,7 @@ import resources from './resources'
 
 const dbg = debug(__filename)
 
-const secret = _.get(config, 'test.oauth.issuer.signingKey')
+const secret = _.get(config, 'test.oauth.issuer.signingKey', 'dummy')
 const credentialsRequired = _.get(config, 'test.api.credentialsRequired')
 const whitelist = _.get(config, 'test.api.whitelist')
 if (credentialsRequired) {
@@ -19,8 +18,6 @@ if (credentialsRequired) {
 } else {
 	dbg('WARNING: configured without strictly requiring credentials')
 }
-
-const _sleep = config.get('test.api.sleep')
 
 export default function() {
 	const router = express.Router()
@@ -36,8 +33,7 @@ export default function() {
 	router.use(nocache())
 
 	router.use((req, res, next) => {
-		dbg('get middleware: method=%o, sleep=%o', req.method, _sleep)
-		sleep(_sleep)
+		dbg('get middleware: method=%o, sleep=%o', req.method)
 		if (req.method === 'GET') {
 			const index = getIndex(req.url)
 			if (index) {
