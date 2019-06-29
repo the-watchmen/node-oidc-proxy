@@ -28,10 +28,10 @@ export default function({decorate}) {
 		`/${proxyPath}`,
 		proxy(clientUrl, {
 			preserveReqSession: true,
-			reqAsBuffer: true,
 			proxyReqOptDecorator(proxyReqOpts, srcReq) {
-				// dbg('proxy-req-opt-decorator')
 				webHelpr.dbgReq({msg: 'proxy-req-opt-decorator', dbg, req: srcReq})
+				// session must be a buffer?
+				proxyReqOpts.session = null
 				return proxyReqOpts
 			},
 			userResDecorator(proxyRes, proxyResData, userReq, userRes) {

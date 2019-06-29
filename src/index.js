@@ -89,6 +89,7 @@ export default async function() {
 					dbg('proxy-req-opt-decorator: warning, unable to obtain token from session...')
 				}
 
+				// session must be a buffer?
 				proxyReqOpts.session = null
 				return proxyReqOpts
 			},
