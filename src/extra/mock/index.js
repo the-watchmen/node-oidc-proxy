@@ -11,7 +11,7 @@ import resources from './resources'
 const dbg = debug(__filename)
 
 const secret = _.get(config, 'test.oauth.issuer.signingKey', 'dummy')
-const credentialsRequired = _.get(config, 'test.api.credentialsRequired')
+const credentialsRequired = _.get(config, 'test.api.credentialsRequired', false)
 const whitelist = _.get(config, 'test.api.whitelist')
 if (credentialsRequired) {
 	dbg('strictly requiring credentials (except for whitelist=%o)', whitelist)
@@ -63,6 +63,7 @@ export default function() {
 
 	// eslint-disable-next-line no-unused-vars
 	router.use((err, req, res, next) => {
+		dbg('err=%o', err)
 		if (err.name === 'UnauthorizedError') {
 			dbg('unauthorized-error')
 			res.status(401).send({message: 'token missing or invalid'})
