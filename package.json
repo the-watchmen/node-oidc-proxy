@@ -1,6 +1,6 @@
 {
   "name": "@watchmen/oidc-proxy",
-  "version": "3.3.3",
+  "version": "3.3.4",
   "description": "",
   "main": "dist/index.js",
   "author": "tk",
@@ -61,7 +61,7 @@
     "xo": "0.24.0"
   },
   "peerDependencies": {
-    "@godaddy/terminus": ">=4.1.2",
+    "@godaddy/terminus": "the-hand/terminus#v4.2.0",
     "@watchmen/helpr": ">=2.3.8",
     "@watchmen/json-server-helpr": ">=1.1.0",
     "express-jwt": ">=5.3.1",
@@ -82,6 +82,7 @@
       "eslint-comments/disable-enable-pair": 0,
       "import/no-unassigned-import": 0,
       "import/prefer-default-export": 0,
+      "import/extensions": 0,
       "capitalized-comments": 0,
       "new-cap": 0,
       "radix": 0,
