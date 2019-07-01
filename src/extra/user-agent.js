@@ -20,7 +20,6 @@ export default function({decorate}) {
 	const router = express.Router()
 
 	router.get('/', (req, res) => {
-		webHelpr.dbgReq({dbg, req})
 		res.send(decorate({req, data: {message: 'welcome'}}))
 	})
 
