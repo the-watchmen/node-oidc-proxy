@@ -8,7 +8,7 @@ import dflt from './default'
 //
 const userAgent = {
 	port: 3000,
-	proxyPath: 'proxy',
+	proxyPath: 'proxy-oidc',
 	path: 'user-agent'
 }
 
@@ -17,7 +17,7 @@ userAgent.url = `http://localhost:${userAgent.port}/${userAgent.path}`
 const client = {
 	port: 3000,
 	redirect: {},
-	proxyPath: 'proxy',
+	proxyPath: 'proxy-api',
 	path: 'oidc'
 }
 
@@ -63,6 +63,9 @@ module.exports = {
 		redirect: {
 			auth: `${userAgent.url}/${dflt.userAgent.authPath}`,
 			logout: `${userAgent.url}/${dflt.userAgent.logoutPath}`
+		},
+		proxies: {
+			'proxy-api': `${userAgent.url}/${api.path}`
 		}
 	},
 	// stuff only used for testing...

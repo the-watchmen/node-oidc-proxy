@@ -15,6 +15,7 @@ const proxyPath = config.get('userAgent.proxyPath')
 const clientUrl = config.get('oauth.client.url')
 const authPath = config.get('userAgent.authPath')
 const logoutPath = config.get('userAgent.logoutPath')
+const proxies = config.get('userAgent.proxies')
 
 export default function({decorate}) {
 	const router = express.Router()
@@ -23,9 +24,44 @@ export default function({decorate}) {
 		res.send(decorate({req, data: {message: 'welcome'}}))
 	})
 
+	addProxy({router, path: proxyPath, url: clientUrl, decorate})
+
+	proxies &&
+		_.each(proxies, (url, path) => {
+			addProxy({router, path, url, decorate})
+		})
+
+	router.get(`/${authPath}`, (req, res) => {
+		webHelpr.dbgReq({dbg, req})
+		const data = {
+			...getToken(req, 'id_token'),
+			...getToken(req, 'access_token'),
+			...getToken(req, 'refresh_token')
+		}
+		const user = _.get(data, 'id_token.decoded')
+		user && _.set(req, userKey, user)
+		res.send(decorate({req, data: {message: 'session initiated'}}))
+	})
+
+	router.get(`/${logoutPath}`, (req, res) => {
+		webHelpr.dbgReq({dbg, req})
+		req.session.destroy()
+		res.send(decorate({req, data: {message: 'session terminated'}}))
+	})
+
+	function getToken(req, name) {
+		const token = _.get(req, `query.${name}`)
+		return token && {[name]: {token, decoded: jwt.decode(token)}}
+	}
+
+	return router
+}
+
+function addProxy({router, path, url, decorate}) {
+	dbg('add-proxy: path=%o, url=%o', path, url)
 	router.use(
-		`/${proxyPath}`,
-		proxy(clientUrl, {
+		`/${path}`,
+		proxy(url, {
 			preserveReqSession: true,
 			proxyReqOptDecorator(proxyReqOpts, srcReq) {
 				webHelpr.dbgReq({msg: 'proxy-req-opt-decorator', dbg, req: srcReq})
@@ -56,29 +92,4 @@ export default function({decorate}) {
 			}
 		})
 	)
-
-	router.get(`/${authPath}`, (req, res) => {
-		webHelpr.dbgReq({dbg, req})
-		const data = {
-			...getToken(req, 'id_token'),
-			...getToken(req, 'access_token'),
-			...getToken(req, 'refresh_token')
-		}
-		const user = _.get(data, 'id_token.decoded')
-		user && _.set(req, userKey, user)
-		res.send(decorate({req, data: {message: 'session initiated'}}))
-	})
-
-	router.get(`/${logoutPath}`, (req, res) => {
-		webHelpr.dbgReq({dbg, req})
-		req.session.destroy()
-		res.send(decorate({req, data: {message: 'session terminated'}}))
-	})
-
-	function getToken(req, name) {
-		const token = _.get(req, `query.${name}`)
-		return token && {[name]: {token, decoded: jwt.decode(token)}}
-	}
-
-	return router
 }
