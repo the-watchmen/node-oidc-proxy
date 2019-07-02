@@ -85,7 +85,7 @@ function decorate({data, req}) {
 				},
 				{
 					name: 'people-no-proxy',
-					href: `${config.api.url}/people`
+					href: `${userAgent.url}/proxy-api/${api.path}/people`
 				}
 			]
 		}
