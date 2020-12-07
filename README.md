@@ -23,7 +23,7 @@ details include:
     module.exports = {
     	oauth: {
     		issuer: {
-    			url: `https://keycloak.infra.hci.aetna.com/auth/realms/realm-1`
+    			url: `https://keycloak.something.com/auth/realms/realm-1`
     		},
     		client: {
     			id: 'client-1',
