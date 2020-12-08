@@ -15,7 +15,11 @@ jobs:
         node-version: '14.x'
     - run: npm install -g yarn
     - run: yarn install --frozen-lockfile
-    - run: yarn run test || true
-    - run: npm publish --access public
-      env:
-        NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+    - run: yarn run test
+    - uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          access: public
+    - if: steps.publish.outputs.type != 'none'
+      run: |
+        echo "Version changed: ${{ steps.publish.outputs.old-version }} => ${{ steps.publish.outputs.version }}"
