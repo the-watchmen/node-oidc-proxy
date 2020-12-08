@@ -16,8 +16,8 @@ jobs:
     - run: npm ci --ignore-scripts
     - run: npm run build --if-present
     - run: npm test
-        env:
-          CI: true
+      env:
+        CI: true
     - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
