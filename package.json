@@ -45,7 +45,7 @@
     "@watchmen/test-helpr": "0.3.4",
     "@watchmen/web-helpr": "2.5.0",
     "ava": "1.4.1",
-    "axios": "0.19.0",
+    "axios": "0.21.1",
     "babel-watch": "7.0.0",
     "base64url": "3.0.1",
     "child-process-promise": "2.2.1",
